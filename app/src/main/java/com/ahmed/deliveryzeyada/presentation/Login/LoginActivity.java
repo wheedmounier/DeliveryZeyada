@@ -1,21 +1,19 @@
 package com.ahmed.deliveryzeyada.presentation.Login;
 
-import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProviders;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.ahmed.deliveryzeyada.R;
-import com.ahmed.deliveryzeyada.data.Remote.Response;
+import com.ahmed.deliveryzeyada.data.Remote.api.login.LoginResponse;
+import com.ahmed.deliveryzeyada.presentation.viewModel.ViewModelResponse;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import dagger.android.AndroidInjection;
-import timber.log.Timber;
 
 public class LoginActivity extends AppCompatActivity
 {
@@ -38,18 +36,18 @@ public class LoginActivity extends AppCompatActivity
 
         viewModel = ViewModelProviders.of(this , loginViewModelFactory).get(LoginViewModel.class);
         viewModel.getLoadingStatus().observe(this , this::showHideLoading);
-        viewModel.getLoginResponse().observe(this , this::loginStatus);
+        viewModel.getLoginMutableResponse().observe(this , this::loginStatus);
         loginClicked();
     }
 
     void loginClicked()
     {
-        viewModel.validateUserCredentials("" , "");
+        viewModel.validateUserCredentials("Admin@QD.com" , "123456");
     }
 
-    private void loginStatus(Response response)
+    private void loginStatus(ViewModelResponse<LoginResponse> loginResponse)
     {
-        switch (response.status) {
+        switch (loginResponse.status) {
             case SUCCESS:
                 //Success
                 mvvm_test.setText("success");

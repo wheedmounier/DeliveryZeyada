@@ -4,8 +4,8 @@ import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 
 import com.ahmed.deliveryzeyada.contract.login.LoginUseCase;
-import com.ahmed.deliveryzeyada.data.Remote.Response;
 import com.ahmed.deliveryzeyada.data.Remote.api.login.LoginResponse;
+import com.ahmed.deliveryzeyada.presentation.viewModel.ViewModelResponse;
 import com.ahmed.deliveryzeyada.rx.RunOn;
 import com.ahmed.deliveryzeyada.rx.SchedulerType;
 
@@ -25,24 +25,24 @@ public class LoginViewModel extends ViewModel
     private Scheduler ioScheduler , mainScheduler;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
-    private final MutableLiveData<Response<LoginResponse>> loginResponse = new MutableLiveData<>();
+    private final MutableLiveData<ViewModelResponse> loginMutableResponse = new MutableLiveData<>();
     private final MutableLiveData<Boolean> loadingStatus = new MutableLiveData<>();
 
     @Inject
-    public LoginViewModel(LoginUseCase loginUseCase, @RunOn(SchedulerType.IO) Scheduler ioScheduler,
-                          @RunOn(SchedulerType.UI) Scheduler mainScheduler)
+    LoginViewModel(LoginUseCase loginUseCase, @RunOn(SchedulerType.IO) Scheduler ioScheduler,
+                   @RunOn(SchedulerType.UI) Scheduler mainScheduler)
     {
         this.loginUseCase = loginUseCase;
         this.ioScheduler = ioScheduler;
         this.mainScheduler = mainScheduler;
     }
 
-    public MutableLiveData<Response<LoginResponse>> getLoginResponse()
+    MutableLiveData<ViewModelResponse> getLoginMutableResponse()
     {
-        return loginResponse;
+        return loginMutableResponse;
     }
 
-    public MutableLiveData<Boolean> getLoadingStatus()
+    MutableLiveData<Boolean> getLoadingStatus()
     {
         return loadingStatus;
     }
@@ -66,7 +66,18 @@ public class LoginViewModel extends ViewModel
                 observeOn(mainScheduler).
                 doOnSubscribe(loading -> loadingStatus.setValue(true)).
                 doAfterTerminate(() -> loadingStatus.setValue(false)).
-                subscribe(userResponse -> loginResponse.setValue(Response.success(userResponse)),
-                        throwable -> loginResponse.setValue(Response.error(throwable))));
+                subscribe(this::handleSuccess , this::handleFailure));
     }
+
+    private void handleSuccess(LoginResponse loginResponse)
+    {
+        if(loginResponse.isStatus()) {loginMutableResponse.setValue(ViewModelResponse.success(loginResponse));}
+        else {loginMutableResponse.setValue(ViewModelResponse.error(new Throwable("")));}
+    }
+
+    private void handleFailure(Throwable throwable)
+    {
+        loginMutableResponse.setValue(ViewModelResponse.error(throwable));
+    }
+
 }

@@ -1,4 +1,4 @@
-package com.ahmed.deliveryzeyada.injection;
+package com.ahmed.deliveryzeyada.injection.dagger;
 
 import com.ahmed.deliveryzeyada.injection.login.LoginModule;
 import com.ahmed.deliveryzeyada.injection.rx.SchedulerModule;

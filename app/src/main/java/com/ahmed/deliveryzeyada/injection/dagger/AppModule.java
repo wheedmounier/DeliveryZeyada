@@ -1,4 +1,4 @@
-package com.ahmed.deliveryzeyada.injection;
+package com.ahmed.deliveryzeyada.injection.dagger;
 
 import android.content.Context;
 
