@@ -1,6 +1,6 @@
 package com.ahmed.deliveryzeyada.contract.login;
 
-import com.ahmed.deliveryzeyada.data.Remote.api.login.LoginResponse;
+import com.ahmed.deliveryzeyada.data.Remote.api.login.model.LoginResponse;
 import com.ahmed.deliveryzeyada.data.Remote.api.login.LoginService;
 import com.ahmed.deliveryzeyada.data.Remote.api.login.model.User;
 
@@ -22,9 +22,16 @@ public class LoginRepository implements LoginUseCase
         this.service = service;
     }
 
+
     @Override
-    public Single<LoginResponse> validateCredentials(String userName, String password)
+    public Single<LoginResponse> validateCredentials(String email, String password, String grantType, String deviceId)
     {
-        return service.checkUser(userName , password);
+        return service.checkUser(email , password , grantType , deviceId);
+    }
+
+    @Override
+    public Single<String> checkUser(String email, String password)
+    {
+        return service.validateUser(email, password);
     }
 }

@@ -2,6 +2,7 @@ package com.ahmed.deliveryzeyada.injection.service;
 
 import com.ahmed.deliveryzeyada.data.Remote.HeaderInterceptor;
 import com.ahmed.deliveryzeyada.data.Remote.api.login.LoginService;
+import com.ahmed.deliveryzeyada.data.Remote.api.maps.MapsService;
 import com.ahmed.deliveryzeyada.utils.Constants;
 
 import javax.inject.Named;
@@ -24,6 +25,12 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ApiServiceModule
 {
     private static final String BASE_URL = "base_url";
+
+    @Provides
+    MapsService provideMapsService(Retrofit retrofit)
+    {
+        return retrofit.create(MapsService.class);
+    }
 
     @Provides
     LoginService provideLoginService(Retrofit retrofit)

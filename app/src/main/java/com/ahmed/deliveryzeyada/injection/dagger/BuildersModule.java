@@ -1,9 +1,11 @@
 package com.ahmed.deliveryzeyada.injection.dagger;
 
 import com.ahmed.deliveryzeyada.injection.login.LoginModule;
+import com.ahmed.deliveryzeyada.injection.maps.MapsModule;
 import com.ahmed.deliveryzeyada.injection.rx.SchedulerModule;
 import com.ahmed.deliveryzeyada.injection.service.ApiServiceModule;
 import com.ahmed.deliveryzeyada.presentation.Login.LoginActivity;
+import com.ahmed.deliveryzeyada.presentation.maps.PilotMapActivity;
 
 import dagger.Module;
 import dagger.android.ContributesAndroidInjector;
@@ -14,8 +16,9 @@ import dagger.android.ContributesAndroidInjector;
 @Module
 public abstract class BuildersModule
 {
-    @ContributesAndroidInjector(modules = {LoginModule.class ,
+    @ContributesAndroidInjector(modules = {LoginModule.class , MapsModule.class ,
             ApiServiceModule.class , SchedulerModule.class})
 
     abstract LoginActivity bindLoginActivity();
+    abstract PilotMapActivity bindPilotMapActivity();
 }

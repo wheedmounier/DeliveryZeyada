@@ -4,8 +4,7 @@ import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 
 import com.ahmed.deliveryzeyada.contract.login.LoginUseCase;
-import com.ahmed.deliveryzeyada.data.Remote.api.login.LoginResponse;
-import com.ahmed.deliveryzeyada.presentation.viewModel.ViewModelResponse;
+import com.ahmed.deliveryzeyada.data.Remote.api.login.model.LoginResponse;
 import com.ahmed.deliveryzeyada.rx.RunOn;
 import com.ahmed.deliveryzeyada.rx.SchedulerType;
 
@@ -14,6 +13,8 @@ import javax.inject.Inject;
 import io.reactivex.Scheduler;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
+
+import static com.ahmed.deliveryzeyada.utils.Constants.USER_TYPE_PILOT;
 
 /**
  * Created by Ahmed Kamal on 03/01/2018.
@@ -25,7 +26,13 @@ public class LoginViewModel extends ViewModel
     private Scheduler ioScheduler , mainScheduler;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
-    private final MutableLiveData<ViewModelResponse> loginMutableResponse = new MutableLiveData<>();
+    private final MutableLiveData<LoginResponse> loginSuccessMutable = new MutableLiveData<>();
+    private final MutableLiveData<Throwable> loginFailureMutable = new MutableLiveData<>();
+
+    private final MutableLiveData<String> checkPilotSuccessMutable = new MutableLiveData<>();
+    private final MutableLiveData<String> checkResturantSuccessMutable = new MutableLiveData<>();
+    private final MutableLiveData<Throwable> checkUserFailureMutable = new MutableLiveData<>();
+
     private final MutableLiveData<Boolean> loadingStatus = new MutableLiveData<>();
 
     @Inject
@@ -37,15 +44,23 @@ public class LoginViewModel extends ViewModel
         this.mainScheduler = mainScheduler;
     }
 
-    MutableLiveData<ViewModelResponse> getLoginMutableResponse()
+    MutableLiveData<LoginResponse> getLoginSuccessMutable()
     {
-        return loginMutableResponse;
+        return loginSuccessMutable;
     }
-
+    MutableLiveData<Throwable> getLoginFailureMutable()
+    {
+        return loginFailureMutable;
+    }
     MutableLiveData<Boolean> getLoadingStatus()
     {
         return loadingStatus;
     }
+
+    MutableLiveData<String> getCheckPilotSuccessMutable() {return checkPilotSuccessMutable;}
+    MutableLiveData<String> getCheckResturantSuccessMutable() {return checkResturantSuccessMutable;}
+
+    MutableLiveData<Throwable> getCheckUserFailureMutable() {return checkUserFailureMutable;}
 
     @Override
     protected void onCleared()
@@ -59,25 +74,59 @@ public class LoginViewModel extends ViewModel
         compositeDisposable.add(disposable);
     }
 
-    void validateUserCredentials(String username , String password)
+    void validateUserCredentials(String email , String password , String grantTyoe , String deviceId)
     {
-        addDisposable(loginUseCase.validateCredentials(username , password).
+        if(!email.isEmpty() && !password.isEmpty())
+        {
+            addDisposable(loginUseCase.validateCredentials(email ,password ,grantTyoe ,deviceId).
+                    subscribeOn(ioScheduler).
+                    observeOn(mainScheduler).
+                    doOnSubscribe(loading -> loadingStatus.setValue(true)).
+                    doAfterTerminate(() -> loadingStatus.setValue(false)).
+                    subscribe(this::handleLoginSuccess, this::handleLoginFailure));
+        }
+        else
+        {
+            loginFailureMutable.setValue(new Throwable("Fields Cannot be empty"));
+        }
+    }
+
+    void checkUser(String email , String password)
+    {
+        addDisposable(loginUseCase.checkUser(email , password).
                 subscribeOn(ioScheduler).
                 observeOn(mainScheduler).
                 doOnSubscribe(loading -> loadingStatus.setValue(true)).
                 doAfterTerminate(() -> loadingStatus.setValue(false)).
-                subscribe(this::handleSuccess , this::handleFailure));
+                subscribe(this::checkUserSuccess , this::checkUserFailure));
     }
 
-    private void handleSuccess(LoginResponse loginResponse)
+    private void handleLoginSuccess(LoginResponse loginResponse)
     {
-        if(loginResponse.isStatus()) {loginMutableResponse.setValue(ViewModelResponse.success(loginResponse));}
-        else {loginMutableResponse.setValue(ViewModelResponse.error(new Throwable("")));}
+        loginSuccessMutable.setValue(loginResponse);
     }
 
-    private void handleFailure(Throwable throwable)
+    private void handleLoginFailure(Throwable throwable)
     {
-        loginMutableResponse.setValue(ViewModelResponse.error(throwable));
+        getLoginFailureMutable().setValue(throwable);
     }
+
+    private void checkUserSuccess(String type)
+    {
+        if(type.equalsIgnoreCase(USER_TYPE_PILOT))
+        {
+            checkPilotSuccessMutable.setValue(type);
+        }
+        else
+        {
+            checkResturantSuccessMutable.setValue(type);
+        }
+    }
+
+    private void checkUserFailure(Throwable throwable)
+    {
+        checkUserFailureMutable.setValue(throwable);
+    }
+
 
 }

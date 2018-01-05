@@ -1,27 +1,33 @@
 package com.ahmed.deliveryzeyada.data.Remote.api.login.model;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
- * Created by Ahmed Kamal on 03/01/2018.
+ * Created by Ahmed Kamal on 05/01/2018.
  */
 
 public class User
 {
-    private String userName , password;
+    @SerializedName("email")
+    private String email;
 
-    public User(String userName, String password)
+    @SerializedName("password")
+    private String password;
+
+    public User(String email, String password)
     {
-        this.userName = userName;
+        this.email = email;
         this.password = password;
     }
 
-    public String getUserName()
+    public String getEmail()
     {
-        return userName;
+        return email;
     }
 
-    public void setUserName(String userName)
+    public void setEmail(String email)
     {
-        this.userName = userName;
+        this.email = email;
     }
 
     public String getPassword()

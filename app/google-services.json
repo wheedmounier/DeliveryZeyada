@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "497757718412",
+    "firebase_url": "https://deliveryzeyada.firebaseio.com",
+    "project_id": "deliveryzeyada",
+    "storage_bucket": "deliveryzeyada.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:497757718412:android:0aadc6271b690ec7",
+        "android_client_info": {
+          "package_name": "com.ahmed.deliveryzeyada"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "497757718412-d5ba1s2t7f6a4q8kc7jbagcrjkhpbl8m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDtHka3mwRmeC38LozCND76nuxTD0rjy7w"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
