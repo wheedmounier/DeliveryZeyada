@@ -16,9 +16,9 @@ import dagger.android.ContributesAndroidInjector;
 @Module
 public abstract class BuildersModule
 {
-    @ContributesAndroidInjector(modules = {LoginModule.class , MapsModule.class ,
-            ApiServiceModule.class , SchedulerModule.class})
-
+    @ContributesAndroidInjector(modules = {LoginModule.class , ApiServiceModule.class , SchedulerModule.class})
     abstract LoginActivity bindLoginActivity();
+
+    @ContributesAndroidInjector(modules = {MapsModule.class , ApiServiceModule.class , SchedulerModule.class})
     abstract PilotMapActivity bindPilotMapActivity();
 }

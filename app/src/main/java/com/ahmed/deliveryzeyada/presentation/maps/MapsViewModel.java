@@ -3,11 +3,16 @@ package com.ahmed.deliveryzeyada.presentation.maps;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 
+import com.ahmed.deliveryzeyada.R;
 import com.ahmed.deliveryzeyada.contract.maps.MapsUseCase;
 import com.ahmed.deliveryzeyada.contract.maps.model.PilotMapResponse;
 import com.ahmed.deliveryzeyada.data.Remote.api.maps.ResturantMapResponse;
 import com.ahmed.deliveryzeyada.rx.RunOn;
 import com.ahmed.deliveryzeyada.rx.SchedulerType;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.List;
 
@@ -31,6 +36,7 @@ public class MapsViewModel extends ViewModel
     private final MutableLiveData<PilotMapResponse> pilotResponseSuccessMutable = new MutableLiveData<>();
     private final MutableLiveData<Throwable> pilotResponseFailureMutable = new MutableLiveData<>();
 
+    private final MutableLiveData<GoogleMap> drawMapMutable = new MutableLiveData<>();
     private final MutableLiveData<Boolean> loadingStatus = new MutableLiveData<>();
 
     private Scheduler ioScheduler , mainScheduler;
@@ -65,6 +71,11 @@ public class MapsViewModel extends ViewModel
         return pilotResponseFailureMutable;
     }
 
+    public MutableLiveData<GoogleMap> getDrawMapMutable()
+    {
+        return drawMapMutable;
+    }
+
     public MutableLiveData<Boolean> getLoadingStatus()
     {
         return loadingStatus;
@@ -83,6 +94,20 @@ public class MapsViewModel extends ViewModel
         }
     }
 
+    void drawOnMap(GoogleMap googleMap , List<ResturantMapResponse> resturantMapResponses)
+    {
+        for(int i = 0 ; i < resturantMapResponses.size() ; i++)
+        {
+            if(resturantMapResponses.get(i).getLang() != null && resturantMapResponses.get(i).getLat() != null)
+            {
+                googleMap.addMarker(new MarkerOptions().position(new LatLng(Double.parseDouble(resturantMapResponses.get(i).getLat()) ,
+                        Double.parseDouble(resturantMapResponses.get(0).getLang()))).
+                        icon(BitmapDescriptorFactory.fromResource(R.drawable.common_full_open_on_phone)).
+                        title(resturantMapResponses.get(i).getName()));
+            }
+            drawMapMutable.setValue(googleMap);
+        }
+    }
 
     private void resturantsSuccess(List<ResturantMapResponse> resturantMapResponse)
     {

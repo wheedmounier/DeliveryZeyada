@@ -89,7 +89,7 @@ public class LoginActivity extends AppCompatActivity
 
     private void pilotSuccess(String pilot)
     {
-        //startActivity(new Intent(this , PilotMapActivity.class));
+        startActivity(new Intent(this , PilotMapActivity.class));
     }
 
     private void resturantSuccess(String resturant)

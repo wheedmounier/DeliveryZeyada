@@ -14,10 +14,10 @@ public class ResturantMapResponse {
     private String name;
     @SerializedName("lat")
     @Expose
-    private Object lat;
+    private String lat;
     @SerializedName("lang")
     @Expose
-    private Object lang;
+    private String lang;
     @SerializedName("address")
     @Expose
     private String address;
@@ -36,19 +36,19 @@ public class ResturantMapResponse {
         this.name = name;
     }
 
-    public Object getLat() {
+    public String getLat() {
         return lat;
     }
 
-    public void setLat(Object lat) {
+    public void setLat(String lat) {
         this.lat = lat;
     }
 
-    public Object getLang() {
+    public String getLang() {
         return lang;
     }
 
-    public void setLang(Object lang) {
+    public void setLang(String lang) {
         this.lang = lang;
     }
 
